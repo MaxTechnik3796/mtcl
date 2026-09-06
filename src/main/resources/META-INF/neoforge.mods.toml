@@ -11,6 +11,9 @@ authors = "${mod_authors}"
 #logoFile = "pack.png"
 description = '''${mod_description}'''
 
+[[mixins]]
+config = "mtcl.mixins.json"
+
 [[dependencies."${mod_id}"]]
 modId = "neoforge"
 mandatory = true
