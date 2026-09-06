@@ -1,4 +1,4 @@
-package cz.maxtechnik.client;
+package cz.maxtechnik.mtcl;
 
 import com.mojang.logging.LogUtils;
 import net.neoforged.api.distmarker.Dist;
@@ -11,27 +11,27 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import org.slf4j.Logger;
-@Mod(ClientMod.MODID)
+@Mod(MtclMod.MODID)
 @SuppressWarnings("removal")
-public class ClientMod{
-	public static final String MODID="client";
+public class MtclMod{
+	public static final String MODID="mtcl";
 	public static final Logger LOGGER=LogUtils.getLogger();
-	public ClientMod(IEventBus bus){
+	public MtclMod(IEventBus bus){
 		bus.addListener(this::commonSetup);
 		NeoForge.EVENT_BUS.register(this);
 	}
 	private void commonSetup(final FMLCommonSetupEvent event){
-		LOGGER.info("Client: Common Setup");
+		LOGGER.info("MT-Client: Common Setup");
 	}
 	@SubscribeEvent
 	public void onServerStarting(ServerStartingEvent event){
-		LOGGER.info("Client: Server Starting");
+		LOGGER.info("MT-Client: Server Starting");
 	}
 	@EventBusSubscriber(modid=MODID, bus=EventBusSubscriber.Bus.MOD, value=Dist.CLIENT)
 	public static class ClientModEvents{
 		@SubscribeEvent
 		public static void onClientSetup(FMLClientSetupEvent event){
-			LOGGER.info("Client: Client Setup");
+			LOGGER.info("MT-Client: Client Setup");
 		}
 	}
 }
