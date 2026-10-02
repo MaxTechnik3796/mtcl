@@ -6,7 +6,7 @@ import net.minecraft.client.renderer.RenderType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 @Mixin(targets="com.railwayteam.railways.content.semaphore.SemaphoreRenderer", remap=false)
-public class SemaphoreRendererMixin{
+public class SemaphoreMixin{
 	@WrapOperation(
 			method="renderSafe*",
 			at=@At(

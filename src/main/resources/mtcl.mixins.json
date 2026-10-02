@@ -3,11 +3,12 @@
 	"minVersion":"0.8",
 	"package":"cz.maxtechnik.mtcl.mixin",
 	"compatibilityLevel":"JAVA_21",
+	"plugin":"cz.maxtechnik.mtcl.mixin.MtclModMixinPlugin",
 	"mixins":[
 	],
 	"client":[
-		"NetheriteBacktankFirstPersonRendererMixin",
-		"SemaphoreRendererMixin"
+		"NetheriteBacktankMixin",
+		"SemaphoreMixin"
 	],
 	"injectors":{
 		"defaultRequire":1
