@@ -87,8 +87,8 @@ repositories{
     }
 }
 dependencies{
-    implementation "net.neoforged:neoforge:${neo_version}"
-    implementation "curse.maven:create-328085:7963363"
+    //Create
+    //implementation "curse.maven:create-328085:7963363"
     //JEI
     compileOnly("mezz.jei:jei-${minecraft_version}-common-api:${jei_version}")
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge-api:${jei_version}")
@@ -96,7 +96,7 @@ dependencies{
     //Other:
     runtimeOnly"curse.maven:worldedit-225608:5830452"
     runtimeOnly"curse.maven:opm-1551501:8738835"
-    implementation"curse.maven:steam-n-rails-neoforge-1414670:8522154"
+    //implementation"curse.maven:steam-n-rails-neoforge-1414670:8522154"
     runtimeOnly fileTree(dir:'libs',include:['*.jar'])
     implementation fileTree(dir:'sourceLibs',include:['*.jar'])
 }
