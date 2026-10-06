@@ -1,6 +1,6 @@
 package cz.maxtechnik.mtcl.mixin;
 
-import net.neoforged.fml.ModList;
+import net.neoforged.fml.loading.LoadingModList;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -10,9 +10,17 @@ import java.util.Set;
 public class MtclModMixinPlugin implements IMixinConfigPlugin{
 	@Override
 	public boolean shouldApplyMixin(String targetClassName,String mixinClassName){
-		if(mixinClassName.endsWith("NetheriteBacktankMixin")) return ModList.get()!=null&&ModList.get().isLoaded("create");
-		if(mixinClassName.endsWith("SemaphoreMixin")) return ModList.get()!=null&&ModList.get().isLoaded("railways");
+		if(mixinClassName.endsWith("NetheriteBacktankMixin")){
+			return isModLoaded("create");
+		}
+		if(mixinClassName.endsWith("SemaphoreMixin")){
+			return isModLoaded("railways");
+		}
 		return true;
+	}
+	private static boolean isModLoaded(String modId){
+		if(LoadingModList.get()==null) return false;
+		return LoadingModList.get().getModFileById(modId)!=null||LoadingModList.get().getMods().stream().anyMatch(mod->mod.getModId().equalsIgnoreCase(modId));
 	}
 	@Override
 	public void onLoad(String mixinPackage){
