@@ -18,9 +18,15 @@ public class MtclModKeys{
 			InputConstants.UNKNOWN.getValue(),
 			CATEGORY
 	);
+	public static final KeyMapping AUTO_FROGPORT=new KeyMapping(
+			"key.mtcl.auto_frogport",INPUT,
+			InputConstants.UNKNOWN.getValue(),
+			CATEGORY
+	);
 	@SubscribeEvent
 	public static void onKeyRegister(RegisterKeyMappingsEvent event){
 		event.register(BACKPACK);
+		event.register(AUTO_FROGPORT);
 	}
 	@EventBusSubscriber(modid=MtclMod.MODID, value=Dist.CLIENT)
 	public static class KeyInputHandler{
