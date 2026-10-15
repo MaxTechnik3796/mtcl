@@ -1,8 +1,9 @@
-package cz.maxtechnik.mtcl;
+package cz.maxtechnik.mtcl.init.event.client;
 
 import com.simibubi.create.content.logistics.packagePort.PackagePortScreen;
 import com.simibubi.create.content.logistics.packagePort.frogport.FrogportBlockEntity;
 import com.simibubi.create.foundation.gui.widget.IconButton;
+import cz.maxtechnik.mtcl.MtclMod;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.world.entity.player.Player;
@@ -12,7 +13,7 @@ import net.neoforged.neoforge.client.event.ScreenEvent;
 
 import java.lang.reflect.Field;
 
-import static cz.maxtechnik.mtcl.MtclModKeys.AUTO_FROGPORT;
+import static cz.maxtechnik.mtcl.init.other.MtclModKeys.AUTO_FROGPORT;
 public class AutoFrogportHandler{
 	public static boolean active=false;
 	@SubscribeEvent

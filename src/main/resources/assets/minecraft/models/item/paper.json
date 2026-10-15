@@ -1,0 +1,14 @@
+{
+	"parent":"item/generated",
+	"textures":{
+		"layer0":"item/paper"
+	},
+	"overrides":[
+		{
+			"predicate":{
+				"mtcl:item_type":1.0
+			},
+			"model":"mtcl:item/afk_fragment"
+		}
+	]
+}

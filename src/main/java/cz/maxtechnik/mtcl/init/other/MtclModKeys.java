@@ -1,6 +1,7 @@
-package cz.maxtechnik.mtcl;
+package cz.maxtechnik.mtcl.init.other;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import cz.maxtechnik.mtcl.MtclMod;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.neoforged.api.distmarker.Dist;
@@ -11,22 +12,12 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 @SuppressWarnings("removal")
 @EventBusSubscriber(modid=MtclMod.MODID, bus=EventBusSubscriber.Bus.MOD, value=Dist.CLIENT)
 public class MtclModKeys{
-	public static final String CATEGORY="key.categories.mtcl";
-	static InputConstants.Type INPUT=InputConstants.Type.KEYSYM;
-	public static final KeyMapping BACKPACK=new KeyMapping(
-			"key.mtcl.backpack",INPUT,
-			InputConstants.UNKNOWN.getValue(),
-			CATEGORY
-	);
-	public static final KeyMapping AUTO_FROGPORT=new KeyMapping(
-			"key.mtcl.auto_frogport",INPUT,
-			InputConstants.UNKNOWN.getValue(),
-			CATEGORY
-	);
+	public static final KeyMapping BACKPACK=registerKey("key.mtcl.backpack");
+	public static final KeyMapping AUTO_FROGPORT=registerKey("key.mtcl.auto_frogport");
 	@SubscribeEvent
 	public static void onKeyRegister(RegisterKeyMappingsEvent event){
-		event.register(BACKPACK);
-		event.register(AUTO_FROGPORT);
+		KeyMapping[] keys={BACKPACK,AUTO_FROGPORT};
+		for(KeyMapping key:keys) event.register(key);
 	}
 	@EventBusSubscriber(modid=MtclMod.MODID, value=Dist.CLIENT)
 	public static class KeyInputHandler{
@@ -39,5 +30,8 @@ public class MtclModKeys{
 				else mc.player.connection.sendCommand("backpack");
 			}
 		}
+	}
+	private static KeyMapping registerKey(String name){
+		return new KeyMapping(name,InputConstants.Type.KEYSYM,InputConstants.UNKNOWN.getValue(),"key.categories.mtcl");
 	}
 }

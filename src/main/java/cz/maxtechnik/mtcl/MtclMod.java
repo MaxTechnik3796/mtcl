@@ -1,6 +1,8 @@
 package cz.maxtechnik.mtcl;
 
 import com.mojang.logging.LogUtils;
+import cz.maxtechnik.mtcl.init.event.client.AutoFrogportHandler;
+import cz.maxtechnik.mtcl.init.event.client.Darkup;
 import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -13,8 +15,6 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
 import org.slf4j.Logger;
-
-import java.awt.*;
 @Mod(MtclMod.MODID)
 @SuppressWarnings("removal")
 public class MtclMod{
@@ -36,8 +36,12 @@ public class MtclMod{
 		@SubscribeEvent
 		public static void onClientSetup(FMLClientSetupEvent event){
 			LOGGER.info("MT-Client: Client Setup");
-			if(ModList.get().isLoaded("create")) NeoForge.EVENT_BUS.register(AutoFrogportHandler.class);
+			if(isModLoaded("create")) NeoForge.EVENT_BUS.register(AutoFrogportHandler.class);
+			Darkup.registerKeysTextures(event);
 		}
+	}
+	public static boolean isModLoaded(String modid){
+		return ModList.get().isLoaded(modid);
 	}
 	public static Component toggleMessage(String message,boolean state){
 		return Component.translatable("info."+MODID+"."+message).append(": ").append(Component.translatable(state?"info."+MODID+".on":"info."+MODID+".off"));
