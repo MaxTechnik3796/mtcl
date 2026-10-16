@@ -26,7 +26,7 @@ public class MtclModKeys{
 			Minecraft mc=Minecraft.getInstance();
 			if(mc.player==null) return;
 			while(BACKPACK.consumeClick()){
-				if(mc.player.isCrouching()) mc.player.connection.sendCommand("enderchest");
+				if(mc.player.isShiftKeyDown()) mc.player.connection.sendCommand("enderchest");
 				else mc.player.connection.sendCommand("backpack");
 			}
 		}
