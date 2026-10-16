@@ -24,7 +24,7 @@ public class Darkup{
 			"nevíš si rady? navštiv naši wiki: wiki.darkup.cz",
 			"viděl jsi hráče porušovat pravidla? nahlaš ho příkazem: /report <hráč>",
 			"přijď si pokecat na náš discord: discord.darkup.cz",
-			"hlasuj na survivalu a oneBlocku pro server pomocí /vote a získej odměnu."
+			"hlasuj na survivalu a oneblocku pro server pomocí /vote a získej odměnu."
 	);
 	@SubscribeEvent
 	public static void onChatMessage(ClientChatReceivedEvent event){
