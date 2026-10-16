@@ -20,11 +20,11 @@ import java.util.List;
 @EventBusSubscriber(modid=MtclMod.MODID, bus=EventBusSubscriber.Bus.GAME, value=Dist.CLIENT)
 public class Darkup{
 	private static final List<String> BLOCKED_ANNOUNCEMENTS=List.of(
-			"nezapomeň si přečíst pravidla na webu www.darkup",
-			"nevíš si rady? navštiv naši wiki: wiki.darkup.cz",
-			"viděl jsi hráče porušovat pravidla? nahlaš ho příkazem: /report <hráč>",
-			"přijď si pokecat na náš discord: discord.darkup.cz",
-			"hlasuj na survivalu a oneblocku pro server pomocí /vote a získej odměnu."
+			"Nezapomeň si přečíst pravidla na webu www.darkup",
+			"Nevíš si rady? Navštiv naši wiki: wiki.darkup.cz",
+			"Viděl jsi hráče porušovat pravidla? Nahlaš ho příkazem: /report <hráč>",
+			"Přijď si pokecat na náš Discord: discord.darkup.cz",
+			"Hlasuj na Survivalu a OneBlocku pro server pomocí /vote a získej odměnu."
 	);
 	@SubscribeEvent
 	public static void onChatMessage(ClientChatReceivedEvent event){
@@ -36,7 +36,7 @@ public class Darkup{
 		}
 		if(message.contains("[oznámení]")){
 			for(String blocked: BLOCKED_ANNOUNCEMENTS)
-				if(message.contains(blocked)){
+				if(message.contains(blocked.toLowerCase())){
 					event.setCanceled(true);
 					return;
 				}
