@@ -17,7 +17,7 @@ public class MtclModKeys{
 	@SubscribeEvent
 	public static void onKeyRegister(RegisterKeyMappingsEvent event){
 		KeyMapping[] keys={BACKPACK,AUTO_FROGPORT};
-		for(KeyMapping key:keys) event.register(key);
+		for(KeyMapping key: keys) event.register(key);
 	}
 	@EventBusSubscriber(modid=MtclMod.MODID, value=Dist.CLIENT)
 	public static class KeyInputHandler{
