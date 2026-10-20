@@ -1,0 +1,14 @@
+{
+	"parent":"item/generated",
+	"textures":{
+		"layer0":"item/raw_copper"
+	},
+	"overrides":[
+		{
+			"predicate":{
+				"custom_model_data":705
+			},
+			"model":"mtcl:item/resin_clump"
+		}
+	]
+}
