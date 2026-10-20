@@ -1,4 +1,4 @@
-package cz.maxtechnik.mtcl.mixin;
+package cz.maxtechnik.mtcl.mixin.non_blindness;
 
 import net.minecraft.client.renderer.FogRenderer;
 import net.minecraft.world.entity.Entity;

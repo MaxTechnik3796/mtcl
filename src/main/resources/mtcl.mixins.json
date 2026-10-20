@@ -5,7 +5,8 @@
 	"compatibilityLevel":"JAVA_21",
 	"plugin":"cz.maxtechnik.mtcl.mixin.MtclModMixinPlugin",
 	"client":[
-		"FogRendererMixin",
+		"non_blindness.FogRendererMixin",
+		"non_blindness.LevelRendererMixin",
 		"NetheriteBacktankMixin",
 		"SemaphoreMixin"
 	],
