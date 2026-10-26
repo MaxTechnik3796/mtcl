@@ -12,25 +12,25 @@
 		},
 		{
 			"predicate":{
-				"mtcl:key_type":2.0
+				"mtcl:item_type":2.0
 			},
 			"model":"mtcl:item/bazen_key"
 		},
 		{
 			"predicate":{
-				"mtcl:key_type":3.0
+				"mtcl:item_type":3.0
 			},
 			"model":"mtcl:item/les_key"
 		},
 		{
 			"predicate":{
-				"mtcl:key_type":4.0
+				"mtcl:item_type":4.0
 			},
 			"model":"mtcl:item/morph_key"
 		},
 		{
 			"predicate":{
-				"mtcl:key_type":5.0
+				"mtcl:item_type":5.0
 			},
 			"model":"mtcl:item/krev_key"
 		}

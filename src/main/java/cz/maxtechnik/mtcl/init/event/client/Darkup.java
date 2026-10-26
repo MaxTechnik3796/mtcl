@@ -44,7 +44,7 @@ public class Darkup{
 	}
 	public static void registerItemProperties(FMLClientSetupEvent event){
 		event.enqueueWork(()->ItemProperties.register(Items.TRIPWIRE_HOOK,
-				ResourceLocation.fromNamespaceAndPath(MtclMod.MODID,"key_type"),
+				ResourceLocation.fromNamespaceAndPath(MtclMod.MODID,"item_type"),
 				(itemStack,level,entity,seed)->{
 					CustomData customData=itemStack.get(DataComponents.CUSTOM_DATA);
 					if(customData==null) return 0F;
