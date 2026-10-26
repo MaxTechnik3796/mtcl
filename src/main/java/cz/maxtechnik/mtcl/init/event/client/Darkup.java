@@ -57,9 +57,9 @@ public class Darkup{
 						case "crates_pinata_key" -> 2F;
 						case "crates_event_key" -> 3F;
 						case "crates_vehicle_key" -> 4F;
-						case "littlecatset_littlecat_key" -> 5F;//azur
-						case "littlecapybaraset_littlecapybara_key" -> 6F;//kapybara
-						case "aurion_set_key" -> 7F;//hvězdný
+						case "littlecatset_littlecat_key" -> 5F;//azur key
+						case "littlecapybaraset_littlecapybara_key" -> 6F;//kapybara key
+						case "aurion_set_key" -> 7F;//hvezda key
 						default -> 0F;
 					};
 				}
@@ -73,7 +73,14 @@ public class Darkup{
 					if(!tag.contains("PublicBukkitValues",Tag.TAG_COMPOUND)) return 0F;
 					CompoundTag bukkit=tag.getCompound("PublicBukkitValues");
 					if(!bukkit.contains("nexo:id",Tag.TAG_STRING)) return 0F;
-					return bukkit.getString("nexo:id").equals("afk_fragment")?1F:0F;
+					return switch(bukkit.getString("nexo:id")){
+						case "afk_fragment" -> 1F;
+						case "plny_splashfest_set_key" -> 2F;//bazen key
+						case "petragoras_mystic_key" -> 3F;//les key
+						case "divine_zephyr_key" -> 4F;//morph key
+						case "halloween26_key" -> 5F;//krev key
+						default -> 0F;
+					};
 				}
 		));
 	}

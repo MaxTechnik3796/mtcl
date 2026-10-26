@@ -1,0 +1,7 @@
+{
+	"parent":"item/generated",
+	"textures":{
+		"layer0":"block/tripwire_hook",
+		"layer1":"mtcl:item/bazen_key"
+	}
+}
