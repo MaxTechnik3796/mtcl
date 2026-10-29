@@ -3,6 +3,7 @@ package cz.maxtechnik.mtcl;
 import com.mojang.logging.LogUtils;
 import cz.maxtechnik.mtcl.init.event.client.AutoFrogportHandler;
 import cz.maxtechnik.mtcl.init.event.client.Darkup;
+import cz.maxtechnik.mtcl.init.event.client.EnchantedBooker;
 import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
@@ -41,6 +42,7 @@ public class MtclMod{
 			LOGGER.info("MT-Client: Client Setup");
 			if(isModLoaded("create")) NeoForge.EVENT_BUS.register(AutoFrogportHandler.class);
 			Darkup.registerItemProperties(event);
+			EnchantedBooker.registerItemProperties(event);
 		}
 	}
 	public static boolean isModLoaded(String modid){
