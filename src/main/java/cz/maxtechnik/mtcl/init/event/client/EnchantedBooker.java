@@ -12,8 +12,7 @@ import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 public class EnchantedBooker{
 	public static void registerItemProperties(FMLClientSetupEvent event){
-		event.enqueueWork(()->ItemProperties.register(
-				Items.ENCHANTED_BOOK,
+		event.enqueueWork(()->ItemProperties.register(Items.ENCHANTED_BOOK,
 				ResourceLocation.fromNamespaceAndPath(MtclMod.MODID,"book_type"),
 				(itemStack,level,entity,seed)->{
 					ItemEnchantments enchantments=itemStack.get(DataComponents.STORED_ENCHANTMENTS);
@@ -66,6 +65,12 @@ public class EnchantedBooker{
 						case "vanishing_curse" -> 40;
 						case "unbreaking" -> 41;
 						case "wind_burst" -> 42;
+						case "capacity" -> 43;
+						case "railgrind_enchantment" -> 44;
+						case "backstabbing" -> 45;
+						case "potato_recovery" -> 46;
+						case "stasis" -> 47;
+						case "poaching" -> 48;
 						default -> 0;
 					};
 					if(baseType==0) return 0F;
