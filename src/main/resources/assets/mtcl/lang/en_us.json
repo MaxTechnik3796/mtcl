@@ -2,7 +2,9 @@
 	"key.categories.mtcl":"MT-Client",
 	"key.mtcl.backpack":"Open Backpack/Ender",
 	"key.mtcl.auto_frogport":"Toggle Auto Blank Frogport Mode",
+	"key.mtcl.item_info":"Open Item Info",
 	"info.mtcl.on":"ON",
 	"info.mtcl.off":"OFF",
-	"info.mtcl.auto_frogport":"Auto Blank Frogport"
+	"info.mtcl.auto_frogport":"Auto Blank Frogport",
+	"screen.mtcl.item_info":"Item Info"
 }
