@@ -2,11 +2,11 @@ package cz.maxtechnik.mtcl.gui;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import cz.maxtechnik.mtcl.MtclMod;
+import cz.maxtechnik.mtcl.gui.core.Renderer;
 import cz.maxtechnik.mtcl.gui.core.Slot;
 import cz.maxtechnik.mtcl.gui.core.Window;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -24,8 +24,9 @@ public class ItemInfo extends Screen{
 	private static final ResourceLocation TEXTURE=ResourceLocation.fromNamespaceAndPath(MtclMod.MODID,"textures/gui/item_info.png");
 	private static final ResourceLocation SCROLLER_SPRITE=ResourceLocation.withDefaultNamespace("container/stonecutter/scroller");
 	private static final ResourceLocation SCROLLER_DISABLED_SPRITE=ResourceLocation.withDefaultNamespace("container/stonecutter/scroller_disabled");
-	private static final int SLOT_SIZE=18; // Šířka a výška slotu v pixelech (16px item + 2px okraj)
+	private static final int SLOT_SIZE=18;
 	private static final int SCROLLER_WIDTH=12;
+	private static final int SCROLLER_HEIGHT=15; // Přesná vanillová výška jezdce
 	private final List<Slot> activeGridSlots=new ArrayList<>();
 	private ItemStack[] gridItems=new ItemStack[0];
 	private int gridCols=0;
@@ -45,8 +46,8 @@ public class ItemInfo extends Screen{
 		this.addRenderableWidget(new Slot(200,20,Slot.Data.CLASSIC,itemStack,button->{
 			System.out.println("neco");
 		}));
-		TagKey<Item> tag = ItemTags.create(ResourceLocation.parse("c:dyes"));
-		List<ItemStack> itemStacks = BuiltInRegistries.ITEM.getOrCreateTag(tag).stream().map(ItemStack::new).toList();
+		TagKey<Item> tag=ItemTags.create(ResourceLocation.parse("c:dyes"));
+		List<ItemStack> itemStacks=BuiltInRegistries.ITEM.getOrCreateTag(tag).stream().map(ItemStack::new).toList();
 		createGrid(itemStacks.toArray(new ItemStack[0]),3,3,20,20);
 	}
 	@Override
@@ -66,7 +67,6 @@ public class ItemInfo extends Screen{
 		Window.create(Window.CLASSIC,gui,width/2-150,height/4+40,8,8);
 		Window.create(Window.CLASSIC,gui,width/2-130,height/4+40,9,9);
 		Window.create(Window.CLASSIC,gui,width/2-100,height/4+40,30,30);
-
 		RenderSystem.disableBlend();
 	}
 	public void createGrid(ItemStack[] itemStacks,int columns,int rows,int x,int y){
@@ -79,11 +79,9 @@ public class ItemInfo extends Screen{
 		this.updateGridSlots();
 	}
 	private void updateGridSlots(){
-		// 1. Odstranění starých tlačítek z obrazovky
 		for(Slot oldSlot: this.activeGridSlots) this.removeWidget(oldSlot);
 		this.activeGridSlots.clear();
 		if(this.gridCols<=0||this.gridRows<=0) return;
-		// 2. Vytvoření pouze viditelných slotů (columns x rows)
 		for(int r=0;r<this.gridRows;r++){
 			for(int c=0;c<this.gridCols;c++){
 				int itemIndex=(this.scrollRowOffset+r)*this.gridCols+c;
@@ -105,19 +103,20 @@ public class ItemInfo extends Screen{
 		if(this.gridCols<=0||this.gridRows<=0) return;
 		int totalRows=(int)Math.ceil((double)this.gridItems.length/this.gridCols);
 		int maxScrollRows=Math.max(0,totalRows-this.gridRows);
-		int scrollerX=this.gridStartX+(this.gridCols*SLOT_SIZE)+2;
+		int scrollerX=this.gridStartX+(this.gridCols*SLOT_SIZE)+3;
 		int scrollerY=this.gridStartY;
 		int scrollerHeight=this.gridRows*SLOT_SIZE;
-		// Drážka za posuvníkem
-		gui.fill(scrollerX+1,scrollerY,scrollerX+SCROLLER_WIDTH-1,scrollerY+scrollerHeight,0x50000000);
-		// Samotný jezdec
+		// 1. Podkladová drážka
+		Renderer.render(gui,scrollerX-1,scrollerY,SCROLLER_WIDTH+3,scrollerHeight+1,26,0,1);
+		//gui.fill(scrollerX+1,scrollerY,scrollerX+SCROLLER_WIDTH-1,scrollerY+scrollerHeight,0x50000000);
+		// 2. Samotný jezdec s pevnou velikostí 12x15
 		if(maxScrollRows>0){
-			int thumbHeight=Math.max(12,scrollerHeight*this.gridRows/totalRows);
-			int thumbY=scrollerY+(int)((scrollerHeight-thumbHeight)*((float)this.scrollRowOffset/maxScrollRows));
-			gui.blitSprite(SCROLLER_SPRITE,scrollerX,thumbY,SCROLLER_WIDTH,thumbHeight);
+			int trackAvailable=scrollerHeight-SCROLLER_HEIGHT;
+			int thumbY=scrollerY+(int)(trackAvailable*((float)this.scrollRowOffset/maxScrollRows));
+			gui.blitSprite(SCROLLER_SPRITE,scrollerX,thumbY,SCROLLER_WIDTH,SCROLLER_HEIGHT);
 		}else{
-			// Neaktivní scrollbar (např. jen 1 řádek itemů)
-			gui.blitSprite(SCROLLER_DISABLED_SPRITE,scrollerX,scrollerY,SCROLLER_WIDTH,scrollerHeight);
+			// Neaktivní jezdec nahoře (také zachovává 12x15 a neroztahuje se)
+			gui.blitSprite(SCROLLER_DISABLED_SPRITE,scrollerX,scrollerY,SCROLLER_WIDTH,SCROLLER_HEIGHT);
 		}
 	}
 	@Override
@@ -125,11 +124,9 @@ public class ItemInfo extends Screen{
 		int totalRows=(int)Math.ceil((double)this.gridItems.length/this.gridCols);
 		int maxScrollRows=Math.max(0,totalRows-this.gridRows);
 		if(maxScrollRows>0){
-			// Kontrola, zda je myš nad tabulkou nebo scrollerem
 			int gridWidth=(this.gridCols*SLOT_SIZE)+2+SCROLLER_WIDTH;
 			int gridHeight=this.gridRows*SLOT_SIZE;
-			if(mouseX>=this.gridStartX&&mouseX<=this.gridStartX+gridWidth
-					&&mouseY>=this.gridStartY&&mouseY<=this.gridStartY+gridHeight){
+			if(mouseX>=this.gridStartX&&mouseX<=this.gridStartX+gridWidth&&mouseY>=this.gridStartY&&mouseY<=this.gridStartY+gridHeight){
 				if(scrollY>0&&this.scrollRowOffset>0){
 					this.scrollRowOffset--;
 					this.updateGridSlots();
@@ -184,24 +181,17 @@ public class ItemInfo extends Screen{
 		return super.mouseDragged(mouseX,mouseY,button,dragX,dragY);
 	}
 	private void updateScrollFromMouse(double mouseY,int scrollerY,int scrollerHeight,int maxScrollRows){
-		float relativeY=(float)(mouseY-scrollerY)/(float)scrollerHeight;
-		int newOffset=Math.clamp(Math.round(relativeY*maxScrollRows),0,maxScrollRows);
+		int trackAvailable=scrollerHeight-SCROLLER_HEIGHT;
+		if(trackAvailable<=0) return;
+		// Kurzor drží střed 15px jezdce (odečítáme SCROLLER_HEIGHT / 2)
+		float relativeY=(float)(mouseY-scrollerY-(SCROLLER_HEIGHT/2.0f))/(float)trackAvailable;
+		float clampedY=Math.clamp(relativeY,0.0f,1.0f);
+		int newOffset=Math.round(clampedY*maxScrollRows);
 		if(newOffset!=this.scrollRowOffset){
 			this.scrollRowOffset=newOffset;
 			this.updateGridSlots();
 		}
 	}
-	/*public static void createGrid(int columns,int rows,int lastRemoved,int x,int y){
-		if(rows<=0||columns<=0||(rows==1&&columns==lastRemoved)) return;
-		int id=0;
-		for(int row=0;row<rows;row++)
-			for(int column=0;column<columns;column++){
-				if(id>=columns*rows-lastRemoved) return;
-				//create(Data.CLASSIC,gui,x+(Slot.Data.CLASSIC.size-1)*column,y+(Data.CLASSIC.size-1)*row);
-				//gui.drawString(Minecraft.getInstance().font,String.valueOf(id),x+(Data.CLASSIC.size-1)*column,y+(Data.CLASSIC.size-1)*row,0xFFFFFF);
-				id++;
-			}
-	}*/
 	@Override
 	public void onClose(){
 		if(minecraft!=null) minecraft.setScreen(parent);

@@ -6,7 +6,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 public class Renderer{
 	private static final ResourceLocation TEXTURE=ResourceLocation.fromNamespaceAndPath(MtclMod.MODID,"textures/gui/item_info.png");
-	protected static void render(GuiGraphics gui,int x,int y,int width,int height,int offsetX,int offsetY,int cornerSize){
+	public static void render(GuiGraphics gui,int x,int y,int width,int height,int offsetX,int offsetY,int cornerSize){
 		gui.blit(TEXTURE,x,y,offsetX,offsetY,cornerSize,cornerSize,256,256);
 		gui.blit(TEXTURE,x+width-(cornerSize+1),y,offsetX+cornerSize+1,offsetY,cornerSize,cornerSize,256,256);
 		gui.blit(TEXTURE,x,y+height-(cornerSize+1),offsetX,offsetY+cornerSize+1,cornerSize,cornerSize,256,256);
