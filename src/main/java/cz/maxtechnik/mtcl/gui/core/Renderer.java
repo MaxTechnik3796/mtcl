@@ -4,25 +4,29 @@ import cz.maxtechnik.mtcl.MtclMod;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 public class Renderer{
-	private static final ResourceLocation TEXTURE=ResourceLocation.fromNamespaceAndPath(MtclMod.MODID,"textures/gui/item_info.png");
-	protected static void render(GuiGraphics gui,int x,int y,int width,int height,int offsetX,int offsetY,int cornerSize){
-		gui.blit(TEXTURE,x,y,offsetX,offsetY,cornerSize,cornerSize,256,256);
-		gui.blit(TEXTURE,x+width-(cornerSize+1),y,offsetX+cornerSize+1,offsetY,cornerSize,cornerSize,256,256);
-		gui.blit(TEXTURE,x,y+height-(cornerSize+1),offsetX,offsetY+cornerSize+1,cornerSize,cornerSize,256,256);
-		gui.blit(TEXTURE,x+width-(cornerSize+1),y+height-(cornerSize+1),offsetX+cornerSize+1,offsetY+cornerSize+1,8,8,256,256);
-		if(width>cornerSize*2-1)
-			for(int i=0;i<width-cornerSize*2-1;i++){
-				gui.blit(TEXTURE,x+cornerSize+i,y,offsetX+cornerSize,offsetY,1,cornerSize,256,256);
-				gui.blit(TEXTURE,x+cornerSize+i,y+height-(cornerSize+1),offsetX+cornerSize,offsetY+cornerSize+1,1,cornerSize,256,256);
-			}
-		if(height>cornerSize*2-1)
-			for(int i=0;i<height-cornerSize*2-1;i++){
-				gui.blit(TEXTURE,x,y+cornerSize+i,offsetX,offsetY+cornerSize,cornerSize,1,256,256);
-				gui.blit(TEXTURE,x+width-(cornerSize+1),y+cornerSize+i,offsetX+cornerSize+1,offsetY+cornerSize,cornerSize,1,256,256);
-			}
-		if(width>cornerSize*2-1&&height>cornerSize*2-1)
-			for(int i=0;i<width-cornerSize*2-1;i++)
-				for(int j=0;j<height-cornerSize*2-1;j++)
-					gui.blit(TEXTURE,x+cornerSize+i,y+cornerSize+j,offsetX+cornerSize,offsetY+cornerSize,1,1,256,256);
+	public enum Texture{
+		CLASSIC(ResourceLocation.fromNamespaceAndPath(MtclMod.MODID,"textures/gui/background/classic.png"),256,4),
+		TEXT(ResourceLocation.fromNamespaceAndPath(MtclMod.MODID,"textures/gui/background/text.png"),256,8),
+		SLOT(ResourceLocation.fromNamespaceAndPath(MtclMod.MODID,"textures/gui/background/slot.png"),256,1),
+		BOARD(ResourceLocation.fromNamespaceAndPath(MtclMod.MODID,"textures/gui/background/board.png"),256,4);
+		final ResourceLocation texture;
+		final int size;
+		final int cornerSize;
+		Texture(ResourceLocation texture,int size,int cornerSize){
+			this.texture=texture;
+			this.size=size;
+			this.cornerSize=cornerSize;
+		}
+	}
+	protected static void render(GuiGraphics gui,Texture texture,int x,int y,int width,int height){
+		if(width>texture.size||height>texture.size) return;
+		//TOP CORNER:
+		gui.blit(texture.texture,x,y,0,0,width-texture.cornerSize,height-texture.cornerSize,texture.size,texture.size);
+		//VERTICAL:
+		gui.blit(texture.texture,x+width-texture.cornerSize,y,texture.size-texture.cornerSize,0,texture.cornerSize,height-texture.cornerSize,texture.size,texture.size);
+		//HORIZONTAL:
+		gui.blit(texture.texture,x,y+height-texture.cornerSize,0,texture.size-texture.cornerSize,width-texture.cornerSize,texture.cornerSize,texture.size,texture.size);
+		//BOTTOM CORNER:
+		gui.blit(texture.texture,x+width-texture.cornerSize,y+height-texture.cornerSize,texture.size-texture.cornerSize,texture.size-texture.cornerSize,texture.cornerSize,texture.cornerSize,texture.size,texture.size);
 	}
 }

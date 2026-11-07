@@ -11,10 +11,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 public class SlotGrid extends AbstractWidget{
-	private static final ResourceLocation
-			SCROLLER_SPRITE=ResourceLocation.withDefaultNamespace("container/stonecutter/scroller"),
-			SCROLLER_DISABLED_SPRITE=ResourceLocation.withDefaultNamespace("container/stonecutter/scroller_disabled");
-	private static final int SLOT_SIZE=18, SCROLLER_WIDTH=12, SCROLLER_HEIGHT=15;
 	private final int gridCols, gridRows;
 	private final List<Slot> activeGridSlots=new ArrayList<>();
 	private final OnSlotClick onSlotClick;
@@ -26,7 +22,7 @@ public class SlotGrid extends AbstractWidget{
 		void onClick(ItemStack itemStack,int index);
 	}
 	public SlotGrid(int x,int y,int columns,int rows,OnSlotClick onSlotClick){
-		super(x,y,(columns*SLOT_SIZE)+4+SCROLLER_WIDTH,rows*SLOT_SIZE,Component.empty());
+		super(x,y,(columns*18)+16,rows*18,Component.empty());
 		this.gridCols=columns;
 		this.gridRows=rows;
 		this.onSlotClick=onSlotClick;
@@ -48,16 +44,22 @@ public class SlotGrid extends AbstractWidget{
 		for(int r=0;r<this.gridRows;r++){
 			for(int c=0;c<this.gridCols;c++){
 				int itemIndex=(this.scrollRowOffset+r)*this.gridCols+c;
-				int slotX=this.getX()+(c*SLOT_SIZE);
-				int slotY=this.getY()+(r*SLOT_SIZE);
+				int slotX=this.getX()+(c*18);
+				int slotY=this.getY()+(r*18);
 				if(itemIndex<this.gridItems.length){
-					ItemStack stack=this.gridItems[itemIndex];
-					if(!stack.isEmpty()){
-						Slot slot=new Slot(slotX,slotY,Slot.Data.CLASSIC,stack,button->{
-							if(this.onSlotClick!=null) this.onSlotClick.onClick(stack,itemIndex);
+					ItemStack itemStack=this.gridItems[itemIndex];
+					if(!itemStack.isEmpty()){
+						Slot slot=new Slot(slotX,slotY,itemStack,button->{
+							if(this.onSlotClick!=null) this.onSlotClick.onClick(itemStack,itemIndex);
 						});
 						this.activeGridSlots.add(slot);
 					}
+				}else{
+					ItemStack itemStack=ItemStack.EMPTY;
+					Slot slot=new Slot(slotX,slotY,itemStack,button->{
+						if(this.onSlotClick!=null) this.onSlotClick.onClick(itemStack,itemIndex);
+					});
+					this.activeGridSlots.add(slot);
 				}
 			}
 		}
@@ -71,16 +73,16 @@ public class SlotGrid extends AbstractWidget{
 		if(this.gridCols<=0||this.gridRows<=0) return;
 		int totalRows=(int)Math.ceil((double)this.gridItems.length/this.gridCols);
 		int maxScrollRows=Math.max(0,totalRows-this.gridRows);
-		int scrollerX=this.getX()+(this.gridCols*SLOT_SIZE)+3;
+		int scrollerX=this.getX()+(this.gridCols*18)+3;
 		int scrollerY=this.getY();
-		int scrollerHeight=this.gridRows*SLOT_SIZE;
-		Renderer.render(gui,scrollerX-1,scrollerY,SCROLLER_WIDTH+3,scrollerHeight+1,26,0,1);
+		int scrollerHeight=this.gridRows*18;
+		Renderer.render(gui,Renderer.Texture.SLOT,scrollerX-1,scrollerY,15,scrollerHeight+1);
 		int trackStartY=scrollerY+1;
-		int trackAvailable=scrollerHeight-SCROLLER_HEIGHT-2;
+		int trackAvailable=scrollerHeight-17;
 		if(maxScrollRows>0&&trackAvailable>0){
 			int thumbY=trackStartY+(int)(trackAvailable*((float)this.scrollRowOffset/maxScrollRows));
-			gui.blitSprite(SCROLLER_SPRITE,scrollerX,thumbY,SCROLLER_WIDTH,SCROLLER_HEIGHT);
-		}else gui.blitSprite(SCROLLER_DISABLED_SPRITE,scrollerX,trackStartY,SCROLLER_WIDTH,SCROLLER_HEIGHT);
+			gui.blitSprite(ResourceLocation.withDefaultNamespace("container/stonecutter/scroller"),scrollerX,thumbY,12,15);
+		}else gui.blitSprite(ResourceLocation.withDefaultNamespace("container/stonecutter/scroller_disabled"),scrollerX,trackStartY,12,15);
 	}
 	@Override
 	public boolean mouseScrolled(double mouseX,double mouseY,double scrollX,double scrollY){
@@ -106,10 +108,10 @@ public class SlotGrid extends AbstractWidget{
 		if(button==0&&this.gridCols>0){
 			int totalRows=(int)Math.ceil((double)this.gridItems.length/this.gridCols);
 			int maxScrollRows=Math.max(0,totalRows-this.gridRows);
-			int scrollerX=this.getX()+(this.gridCols*SLOT_SIZE)+3;
+			int scrollerX=this.getX()+(this.gridCols*18)+3;
 			int scrollerY=this.getY();
-			int scrollerHeight=this.gridRows*SLOT_SIZE;
-			if(maxScrollRows>0&&mouseX>=scrollerX-1&&mouseX<=scrollerX+SCROLLER_WIDTH+2&&mouseY>=scrollerY&&mouseY<=scrollerY+scrollerHeight){
+			int scrollerHeight=this.gridRows*18;
+			if(maxScrollRows>0&&mouseX>=scrollerX-1&&mouseX<=scrollerX+14&&mouseY>=scrollerY&&mouseY<=scrollerY+scrollerHeight){
 				this.isDraggingScroller=true;
 				this.updateScrollFromMouse(mouseY,scrollerY,scrollerHeight,maxScrollRows);
 				return true;
@@ -131,7 +133,7 @@ public class SlotGrid extends AbstractWidget{
 			int maxScrollRows=Math.max(0,totalRows-this.gridRows);
 			if(maxScrollRows>0){
 				int scrollerY=this.getY();
-				int scrollerHeight=this.gridRows*SLOT_SIZE;
+				int scrollerHeight=this.gridRows*18;
 				this.updateScrollFromMouse(mouseY,scrollerY,scrollerHeight,maxScrollRows);
 				return true;
 			}
@@ -141,9 +143,9 @@ public class SlotGrid extends AbstractWidget{
 	}
 	private void updateScrollFromMouse(double mouseY,int scrollerY,int scrollerHeight,int maxScrollRows){
 		int trackStartY=scrollerY+1;
-		int trackAvailable=scrollerHeight-SCROLLER_HEIGHT-2;
+		int trackAvailable=scrollerHeight-17;
 		if(trackAvailable<=0) return;
-		float relativeY=(float)(mouseY-trackStartY-(SCROLLER_HEIGHT/2F))/(float)trackAvailable;
+		float relativeY=(float)(mouseY-trackStartY-(7.5F))/(float)trackAvailable;
 		float clampedY=Math.clamp(relativeY,0F,1F);
 		int newOffset=Math.round(clampedY*maxScrollRows);
 		if(newOffset!=this.scrollRowOffset){
