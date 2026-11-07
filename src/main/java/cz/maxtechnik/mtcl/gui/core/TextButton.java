@@ -12,7 +12,7 @@ public class TextButton extends Button{
 	private static final long PAUSE_TIME_MS=1200L;
 	private boolean underline=false;
 	private int color=0xFFFFFF;
-	private final Component text;
+	private Component text;
 	public TextButton(int x,int y,int width,Component text,OnPress onPress){
 		super(x,y,width,9,text,onPress);
 		this.text=text;
@@ -26,6 +26,12 @@ public class TextButton extends Button{
 	}
 	public void setColor(int value){
 		this.color=value;
+	}
+	public void setText(String value){
+		this.text=Component.literal(value);
+	}
+	public void setText(Component value){
+		this.text=value;
 	}
 	@Override
 	public void renderWidget(@NotNull GuiGraphics gui,int mouseX,int mouseY,float partialTicks){
