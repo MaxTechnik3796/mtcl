@@ -46,16 +46,5 @@ public class Slot extends Button{
 		Data(int size){
 			this.size=size;
 		}
-		/*public static void createGrid(int columns,int rows,int lastRemoved,GuiGraphics gui,int x,int y){
-			if(rows<=0||columns<=0||(rows==1&&columns==lastRemoved)) return;
-			int id=0;
-			for(int row=0;row<rows;row++)
-				for(int column=0;column<columns;column++){
-					if(id>=columns*rows-lastRemoved) return;
-					create(Data.CLASSIC,gui,x+(Slot.Data.CLASSIC.size-1)*column,y+(Data.CLASSIC.size-1)*row);
-					gui.drawString(Minecraft.getInstance().font,String.valueOf(id),x+(Data.CLASSIC.size-1)*column,y+(Data.CLASSIC.size-1)*row,0xFFFFFF);
-					id++;
-				}
-		}*/
 	}
 }
