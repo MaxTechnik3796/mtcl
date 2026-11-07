@@ -22,7 +22,7 @@ public class ItemInfo extends Screen{
 	private final ItemStack itemStack;
 	private Tab itemTab, blockTab, fluidTab;
 	private Button leftTag,rightTag;
-	private TextButton itemDisplayName,itemRegisterName,itemName,modDisplayName;
+	private TextButton itemDisplayName,itemRegisterName,itemName,modDisplayName,modName;
 	private static final ResourceLocation TEXTURE=ResourceLocation.fromNamespaceAndPath(MtclMod.MODID,"textures/gui/item_info.png");
 	public ItemInfo(ItemStack itemStack,Screen parent){
 		super(Component.translatable("screen."+MtclMod.MODID+".item_info"));
@@ -32,6 +32,10 @@ public class ItemInfo extends Screen{
 	@Override
 	public void init(){
 		super.init();
+		this.addRenderableWidget(new Button(width/2+166,height/2-113,40,14,Component.literal("Reload"),button ->{
+			onClose();
+			if(minecraft!=null) minecraft.setScreen(this);
+		}));
 		TagKey<Item> tag=ItemTags.create(ResourceLocation.parse("c:ingots"));
 		//TagKey<Item> tag=ItemTags.create(ResourceLocation.parse("minecraft:stairs"));
 		List<ItemStack> itemStacks=BuiltInRegistries.ITEM.getOrCreateTag(tag).stream().map(ItemStack::new).toList();
@@ -55,6 +59,26 @@ public class ItemInfo extends Screen{
 		leftTag.setSkipFocus(true);
 		rightTag=this.addRenderableWidget(new Button(width/2+177,height/2-5,14,14,Component.literal(">"),button -> {}));
 		rightTag.setSkipFocus(true);
+
+
+		itemDisplayName=this.addRenderableWidget(new TextButton(width/2+40,height/2-100,50,itemStack.getHoverName(),button->{System.out.println("itemDisplayName");}));
+		itemDisplayName.setUnderline(true);
+
+
+		itemRegisterName=this.addRenderableWidget(new TextButton(width/2+40,height/2-90,50,Component.literal(BuiltInRegistries.ITEM.getKey(itemStack.getItem()).toString()),button->{System.out.println("itemRegisterName");}));
+		itemRegisterName.setUnderline(true);
+
+
+		itemName=this.addRenderableWidget(new TextButton(width/2+40,height/2-80,50,Component.literal("text"),button->{System.out.println("itemName");}));
+		itemName.setUnderline(true);
+
+
+		modDisplayName=this.addRenderableWidget(new TextButton(width/2+40,height/2-70,50,Component.literal("text"),button->{System.out.println("modDisplayName");}));
+		modDisplayName.setUnderline(true);
+
+
+		modName=this.addRenderableWidget(new TextButton(width/2+40,height/2-60,50,Component.literal("text"),button->{System.out.println("modName");}));
+		modName.setUnderline(true);
 	}
 	@Override
 	public void render(@NotNull GuiGraphics gui,int mouseX,int mouseY,float partialTicks){
