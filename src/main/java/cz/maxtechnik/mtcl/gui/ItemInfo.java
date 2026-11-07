@@ -39,7 +39,8 @@ public class ItemInfo extends Screen{
 	private SlotGrid slotGrid;
 	private int tagIndex=0;
 	private String currentTagId="";
-	private static final ResourceLocation TEXTURE=ResourceLocation.fromNamespaceAndPath(MtclMod.MODID,"textures/gui/item_info.png");
+	private OpmCodeViewerWidget codeViewer;
+	private boolean onlyComponentChanges=false;
 	public ItemInfo(ItemStack itemStack,Screen parent){
 		super(Component.translatable("screen."+MtclMod.MODID+".item_info"));
 		this.parent=parent;
@@ -49,6 +50,25 @@ public class ItemInfo extends Screen{
 	public void init(){
 		super.init();
 		this.loadTags();
+		// ==========================================
+		// LEVÝ PANEL: Component / Code View
+		// ==========================================
+		Button toggleChangesButton=this.addRenderableWidget(new Button(width/2-39,height/2+86,29,12,Component.translatable(onlyComponentChanges?"info."+MtclMod.MODID+".code.changes":"info."+MtclMod.MODID+".code.all"),button->{
+			onlyComponentChanges=!onlyComponentChanges;
+			button.setMessage(Component.translatable(onlyComponentChanges?"info."+MtclMod.MODID+".code.changes":"info."+MtclMod.MODID+".code.all"));
+			if(codeViewer!=null) codeViewer.loadFromItemStack(this.itemStack,onlyComponentChanges);
+		}));
+		toggleChangesButton.setSkipFocus(true);
+		Button copyAllButton=this.addRenderableWidget(new Button(width/2-39,height/2+98,29,12,Component.translatable("info."+MtclMod.MODID+".code.copy"),button->{
+			String serialized=OpmComponentHandler.extractComponentsToString(this.itemStack,onlyComponentChanges);
+			if(!serialized.isEmpty()) copy(serialized);
+		}));
+		copyAllButton.setSkipFocus(true);
+		codeViewer=this.addRenderableWidget(new OpmCodeViewerWidget(this.font,width/2-203,height/2-109,155,219,(x,y,text)->copy(text)));
+		codeViewer.loadFromItemStack(this.itemStack,onlyComponentChanges);
+		// ==========================================
+		// PRAVÁ ČÁST: Taby, Tagy, Informace a Mřížka
+		// ==========================================
 		this.addRenderableWidget(new Button(width/2+166,height/2-55,40,14,Component.literal("Reload"),button->{
 			onClose();
 			if(minecraft!=null) minecraft.setScreen(new ItemInfo(this.itemStack,this.parent));
@@ -221,13 +241,7 @@ public class ItemInfo extends Screen{
 			}
 		}
 		this.idButton.setText(Component.literal(this.currentTagId));
-		if(this.slotGrid!=null){
-			this.slotGrid.setItems(items);
-		}
-	}
-	@Override
-	public void render(@NotNull GuiGraphics gui,int mouseX,int mouseY,float partialTicks){
-		super.render(gui,mouseX,mouseY,partialTicks);
+		if(this.slotGrid!=null) this.slotGrid.setItems(items);
 	}
 	@Override
 	public void renderBackground(@NotNull GuiGraphics gui,int mouseX,int mouseY,float partialTick){
@@ -238,6 +252,7 @@ public class ItemInfo extends Screen{
 		RenderSystem.defaultBlendFunc();
 		// Levý panel komponent
 		Window.create(gui,Renderer.Texture.TEXT,width/2-210,height/2-117,170,235);
+		gui.blit(ResourceLocation.fromNamespaceAndPath(MtclMod.MODID,"textures/gui/tab_code.png"),width/2-40,height/2+82,0,0,32,32,32,32);
 		// Horní panel informací o itemu
 		Window.create(gui,Renderer.Texture.CLASSIC,width/2-38,height/2-117,248,80);
 		Window.create(gui,Renderer.Texture.BOARD,width/2-34,height/2-113,72,72);

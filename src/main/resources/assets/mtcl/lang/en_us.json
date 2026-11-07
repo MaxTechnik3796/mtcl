@@ -10,5 +10,8 @@
 	"info.mtcl.item_tags":"Item Tags",
 	"info.mtcl.block_tags":"Block Tags",
 	"info.mtcl.fluid_tags":"Fluid Tags",
-	"info.mtcl.no_tags":"No tags"
+	"info.mtcl.no_tags":"No tags",
+	"info.mtcl.code.copy":"COPY",
+	"info.mtcl.code.changes":"CHAN",
+	"info.mtcl.code.all":"ALL"
 }
