@@ -37,8 +37,6 @@ public class Slot extends Button{
 		}
 		RenderSystem.disableBlend();
 	}
-
-
 	public enum Data{
 		CLASSIC(18),
 		OUTPUT(26);
