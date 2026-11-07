@@ -2,6 +2,7 @@ package cz.maxtechnik.mtcl.gui.core;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import cz.maxtechnik.mtcl.MtclMod;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
@@ -11,9 +12,13 @@ import org.jetbrains.annotations.NotNull;
 public class Tab extends Button{
 	private final ItemStack icon;
 	private boolean pressed=false;
+	private String hover="text";
 	public Tab(int x,int y,Component text,ItemStack icon,OnPress onPress){
 		super(x,y,32,28,text,onPress,DEFAULT_NARRATION);
 		this.icon=icon;
+	}
+	public void setHover(String value){
+		this.hover=value;
 	}
 	public void press(boolean value){
 		pressed=value;
@@ -28,6 +33,7 @@ public class Tab extends Button{
 		gui.pose().pushPose();
 		gui.renderItem(icon,this.getX()+14,this.getY()+6);
 		gui.pose().popPose();
+		if(isHovered) gui.renderTooltip(Minecraft.getInstance().font,Component.translatable(hover),mouseX,mouseY);
 		RenderSystem.disableBlend();
 	}
 }

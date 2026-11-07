@@ -6,5 +6,8 @@
 	"info.mtcl.on":"ON",
 	"info.mtcl.off":"OFF",
 	"info.mtcl.auto_frogport":"Auto Blank Frogport",
-	"screen.mtcl.item_info":"Item Info"
+	"screen.mtcl.item_info":"Item Info",
+	"info.mtcl.item_tags":"Item Tags",
+	"info.mtcl.block_tags":"Block Tags",
+	"info.mtcl.fluid_tags":"Fluid Tags"
 }
