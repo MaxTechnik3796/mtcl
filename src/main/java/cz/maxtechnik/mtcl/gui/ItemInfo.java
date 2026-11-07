@@ -46,7 +46,7 @@ public class ItemInfo extends Screen{
 		this.addRenderableWidget(new Slot(200,20,Slot.Data.CLASSIC,itemStack,button->{
 			System.out.println("neco");
 		}));
-		TagKey<Item> tag=ItemTags.create(ResourceLocation.parse("c:dyes"));
+		TagKey<Item> tag=ItemTags.create(ResourceLocation.parse("c:ingots"));
 		List<ItemStack> itemStacks=BuiltInRegistries.ITEM.getOrCreateTag(tag).stream().map(ItemStack::new).toList();
 		createGrid(itemStacks.toArray(new ItemStack[0]),3,3,20,20);
 	}
@@ -106,25 +106,21 @@ public class ItemInfo extends Screen{
 		int scrollerX=this.gridStartX+(this.gridCols*SLOT_SIZE)+3;
 		int scrollerY=this.gridStartY;
 		int scrollerHeight=this.gridRows*SLOT_SIZE;
-		// 1. Podkladová drážka
 		Renderer.render(gui,scrollerX-1,scrollerY,SCROLLER_WIDTH+3,scrollerHeight+1,26,0,1);
-		//gui.fill(scrollerX+1,scrollerY,scrollerX+SCROLLER_WIDTH-1,scrollerY+scrollerHeight,0x50000000);
-		// 2. Samotný jezdec s pevnou velikostí 12x15
-		if(maxScrollRows>0){
-			int trackAvailable=scrollerHeight-SCROLLER_HEIGHT;
-			int thumbY=scrollerY+(int)(trackAvailable*((float)this.scrollRowOffset/maxScrollRows));
+		int trackStartY=scrollerY+1;
+		int trackAvailable=scrollerHeight-SCROLLER_HEIGHT-2;
+		if(maxScrollRows>0&&trackAvailable>0){
+			int thumbY=trackStartY+(int)(trackAvailable*((float)this.scrollRowOffset/maxScrollRows));
 			gui.blitSprite(SCROLLER_SPRITE,scrollerX,thumbY,SCROLLER_WIDTH,SCROLLER_HEIGHT);
-		}else{
-			// Neaktivní jezdec nahoře (také zachovává 12x15 a neroztahuje se)
-			gui.blitSprite(SCROLLER_DISABLED_SPRITE,scrollerX,scrollerY,SCROLLER_WIDTH,SCROLLER_HEIGHT);
-		}
+		}else gui.blitSprite(SCROLLER_DISABLED_SPRITE,scrollerX,trackStartY,SCROLLER_WIDTH,SCROLLER_HEIGHT);
+
 	}
 	@Override
 	public boolean mouseScrolled(double mouseX,double mouseY,double scrollX,double scrollY){
 		int totalRows=(int)Math.ceil((double)this.gridItems.length/this.gridCols);
 		int maxScrollRows=Math.max(0,totalRows-this.gridRows);
 		if(maxScrollRows>0){
-			int gridWidth=(this.gridCols*SLOT_SIZE)+2+SCROLLER_WIDTH;
+			int gridWidth=(this.gridCols*SLOT_SIZE)+4+SCROLLER_WIDTH;
 			int gridHeight=this.gridRows*SLOT_SIZE;
 			if(mouseX>=this.gridStartX&&mouseX<=this.gridStartX+gridWidth&&mouseY>=this.gridStartY&&mouseY<=this.gridStartY+gridHeight){
 				if(scrollY>0&&this.scrollRowOffset>0){
@@ -181,11 +177,11 @@ public class ItemInfo extends Screen{
 		return super.mouseDragged(mouseX,mouseY,button,dragX,dragY);
 	}
 	private void updateScrollFromMouse(double mouseY,int scrollerY,int scrollerHeight,int maxScrollRows){
-		int trackAvailable=scrollerHeight-SCROLLER_HEIGHT;
+		int trackStartY=scrollerY+1;
+		int trackAvailable=scrollerHeight-SCROLLER_HEIGHT-2;
 		if(trackAvailable<=0) return;
-		// Kurzor drží střed 15px jezdce (odečítáme SCROLLER_HEIGHT / 2)
-		float relativeY=(float)(mouseY-scrollerY-(SCROLLER_HEIGHT/2.0f))/(float)trackAvailable;
-		float clampedY=Math.clamp(relativeY,0.0f,1.0f);
+		float relativeY=(float)(mouseY-trackStartY-(SCROLLER_HEIGHT/2F))/(float)trackAvailable;
+		float clampedY=Math.clamp(relativeY,0F,1F);
 		int newOffset=Math.round(clampedY*maxScrollRows);
 		if(newOffset!=this.scrollRowOffset){
 			this.scrollRowOffset=newOffset;
