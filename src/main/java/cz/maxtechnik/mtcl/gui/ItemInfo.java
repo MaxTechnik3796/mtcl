@@ -4,7 +4,6 @@ import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import cz.maxtechnik.mtcl.MtclMod;
 import cz.maxtechnik.mtcl.gui.core.*;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -23,6 +22,7 @@ public class ItemInfo extends Screen{
 	private final ItemStack itemStack;
 	private Tab itemTab, blockTab, fluidTab;
 	private Button leftTag,rightTag;
+	private TextButton itemDisplayName,itemRegisterName,itemName,modDisplayName;
 	private static final ResourceLocation TEXTURE=ResourceLocation.fromNamespaceAndPath(MtclMod.MODID,"textures/gui/item_info.png");
 	public ItemInfo(ItemStack itemStack,Screen parent){
 		super(Component.translatable("screen."+MtclMod.MODID+".item_info"));
@@ -85,14 +85,13 @@ public class ItemInfo extends Screen{
 		gui.flush();
 		Lighting.setupFor3DItems();
 		gui.pose().popPose();
-		RenderSystem.disableBlend();
 		//Tags:
 		Window.create(gui,Renderer.Texture.CLASSIC,width/2-9,height/2-37,219,155);
 
 		gui.fill(width/2+26,height/2-5,width/2+177,height/2+9,0xFFA1A1A1);
 		gui.drawCenteredString(minecraft.font,Component.literal("xxxxxxxxxxxxxxxxxxxxxxxxx"),width/2+101,height/2-3,0xFFFFFF);
 
-
+		RenderSystem.disableBlend();
 	}
 	private void selectTab(int tab){
 		switch(tab){
