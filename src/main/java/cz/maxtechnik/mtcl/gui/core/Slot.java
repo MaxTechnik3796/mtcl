@@ -8,18 +8,13 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 public class Slot extends Button{
 	private final ItemStack itemStack;
 	public Slot(int x,int y,ItemStack itemStack,OnPress onPress){
 		super(x,y,18,18,Component.empty(),onPress,DEFAULT_NARRATION);
 		this.itemStack=itemStack;
-	}
-	@Override
-	public void onClick(double mouseX,double mouseY){
-		super.onClick(mouseX,mouseY);
-		this.setFocused(false);
-		System.out.println("neco");
 	}
 	@Override
 	protected void renderWidget(@NotNull GuiGraphics gui,int mouseX,int mouseY,float partialTick){
@@ -35,7 +30,7 @@ public class Slot extends Button{
 			gui.pose().pushPose();
 			gui.pose().translate(0,0,300);
 			gui.fill(this.getX()+1,this.getY()+1,this.getX()+this.getWidth()-1,this.getY()+this.getHeight()-1,0x80FFFFFF);
-			gui.renderTooltip(Minecraft.getInstance().font,itemStack,mouseX,mouseY);
+			if(!itemStack.getItem().equals(Items.AIR)) gui.renderTooltip(Minecraft.getInstance().font,itemStack,mouseX,mouseY);
 			gui.pose().popPose();
 		}
 		RenderSystem.disableBlend();

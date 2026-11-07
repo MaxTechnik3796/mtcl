@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import cz.maxtechnik.mtcl.MtclMod;
 import cz.maxtechnik.mtcl.gui.core.*;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Holder;
@@ -47,18 +48,14 @@ public class ItemInfo extends Screen{
 	@Override
 	public void init(){
 		super.init();
-		// 1. Zjištění všech dostupných tagů
 		this.loadTags();
-		// 2. Tlačítko Reload
 		this.addRenderableWidget(new Button(width/2+166,height/2-55,40,14,Component.literal("Reload"),button->{
 			onClose();
 			if(minecraft!=null) minecraft.setScreen(new ItemInfo(this.itemStack,this.parent));
 		}));
-		// 3. Mřížka slotů pro zobrazení itemů v tagu
 		slotGrid=this.addRenderableWidget(new SlotGrid(width/2+12,height/2+10,9,5,(clickedStack,index)->{
 			System.out.println("Klik na item v mřížce: "+clickedStack.getHoverName().getString()+" (index: "+index+")");
 		}));
-		// 4. Dynamické vertikální zarovnání Tabů těsně pod sebe bez mezer
 		int tabY=height/2-34;
 		if(!this.itemTags.isEmpty()){
 			itemTab=this.addRenderableWidget(new Tab(width/2-41,tabY,Component.literal("Item Tags"),new ItemStack(Items.IRON_INGOT),button->selectTab(TagType.ITEM)));
@@ -73,23 +70,21 @@ public class ItemInfo extends Screen{
 		if(!this.fluidTags.isEmpty()){
 			fluidTab=this.addRenderableWidget(new Tab(width/2-41,tabY,Component.literal("Fluid Tags"),new ItemStack(Items.WATER_BUCKET),button->selectTab(TagType.FLUID)));
 			fluidTab.setHover("info."+MtclMod.MODID+".fluid_tags");
-			tabY+=30;
 		}
-		// 5. Šipky pro listování tagy
 		leftTag=this.addRenderableWidget(new Button(width/2+12,height/2-20,14,14,Component.literal("<"),button->previousTag()));
 		leftTag.setSkipFocus(true);
 		rightTag=this.addRenderableWidget(new Button(width/2+177,height/2-20,14,14,Component.literal(">"),button->nextTag()));
 		rightTag.setSkipFocus(true);
-		// 6. Textová tlačítka pro zobrazení čísla stránky a ID tagu (s možností zkopírovat ID)
 		int boxX=width/2+28;
 		int boxWidth=147;
 		pageButton=this.addRenderableWidget(new TextButton(boxX,height/2-17,boxWidth,Component.empty(),button->{
 		}));
+		pageButton.setCentered(true);
 		idButton=this.addRenderableWidget(new TextButton(boxX,height/2-2,boxWidth,Component.empty(),button->{
 			if(!currentTagId.isEmpty()) copy(currentTagId);
 		}));
 		idButton.setUnderline(true);
-		// 7. Informace o samotném itemu
+		idButton.setCentered(true);
 		String itemDisplayName=itemStack.getHoverName().getString();
 		TextButton itemDisplayNameButton=this.addRenderableWidget(new TextButton(width/2+45,height/2-108,140,itemDisplayName,button->copy(itemDisplayName)));
 		itemDisplayNameButton.setUnderline(true);
@@ -116,52 +111,33 @@ public class ItemInfo extends Screen{
 		TextButton modNameButton=this.addRenderableWidget(new TextButton(width/2+45,height/2-60,140,modName,button->copy(modName)));
 		modNameButton.setUnderline(true);
 		modNameButton.setColor(0x5555FF);
-		// 8. Výchozí otevření prvního platného tabu
-		if(!this.itemTags.isEmpty()){
-			selectTab(TagType.ITEM);
-		}else if(!this.blockTags.isEmpty()){
-			selectTab(TagType.BLOCK);
-		}else if(!this.fluidTags.isEmpty()){
-			selectTab(TagType.FLUID);
-		}else{
-			updateTagView();
-		}
+		if(!this.itemTags.isEmpty()) selectTab(TagType.ITEM);
+		else if(!this.blockTags.isEmpty()) selectTab(TagType.BLOCK);
+		else if(!this.fluidTags.isEmpty()) selectTab(TagType.FLUID);
+		else updateTagView();
 	}
 	private void loadTags(){
 		this.itemTags.clear();
 		this.blockTags.clear();
 		this.fluidTags.clear();
-		// Item tagy
-		BuiltInRegistries.ITEM.wrapAsHolder(this.itemStack.getItem()).tags()
-				.sorted(Comparator.comparing(tag->tag.location().toString()))
-				.forEach(this.itemTags::add);
-		// Block tagy
-		if(this.itemStack.getItem() instanceof BlockItem blockItem){
-			BuiltInRegistries.BLOCK.wrapAsHolder(blockItem.getBlock()).tags()
-					.sorted(Comparator.comparing(tag->tag.location().toString()))
-					.forEach(this.blockTags::add);
-		}
-		// Fluid tagy
+		BuiltInRegistries.ITEM.wrapAsHolder(this.itemStack.getItem()).tags().sorted(Comparator.comparing(tag->tag.location().toString())).forEach(this.itemTags::add);
+		if(this.itemStack.getItem() instanceof BlockItem blockItem) BuiltInRegistries.BLOCK.wrapAsHolder(blockItem.getBlock()).tags().sorted(Comparator.comparing(tag->tag.location().toString())).forEach(this.blockTags::add);
 		Fluid fluid=null;
-		for(Fluid f: BuiltInRegistries.FLUID){
-			if(f.isSource(f.defaultFluidState())&&f.getBucket()==this.itemStack.getItem()){
-				fluid=f;
+		for(Fluid entry: BuiltInRegistries.FLUID){
+			if(entry.isSource(entry.defaultFluidState())&&entry.getBucket().equals(this.itemStack.getItem())){
+				fluid=entry;
 				break;
 			}
 		}
 		if(fluid==null){
-			for(Fluid f: BuiltInRegistries.FLUID){
-				if(f.getBucket()==this.itemStack.getItem()&&f!=Fluids.EMPTY){
-					fluid=f;
+			for(Fluid entry: BuiltInRegistries.FLUID){
+				if(entry.getBucket()==this.itemStack.getItem()&&entry!=Fluids.EMPTY){
+					fluid=entry;
 					break;
 				}
 			}
 		}
-		if(fluid!=null){
-			BuiltInRegistries.FLUID.wrapAsHolder(fluid).tags()
-					.sorted(Comparator.comparing(tag->tag.location().toString()))
-					.forEach(this.fluidTags::add);
-		}
+		if(fluid!=null) BuiltInRegistries.FLUID.wrapAsHolder(fluid).tags().sorted(Comparator.comparing(tag->tag.location().toString())).forEach(this.fluidTags::add);
 	}
 	private void selectTab(TagType tab){
 		this.currentTabType=tab;
@@ -198,7 +174,7 @@ public class ItemInfo extends Screen{
 			this.leftTag.active=false;
 			this.rightTag.active=false;
 			this.pageButton.setText(Component.literal("0 / 0"));
-			this.idButton.setText(Component.literal("Žádné tagy"));
+			this.idButton.setText(Component.translatable("info."+MtclMod.MODID+".no_tags").withStyle(ChatFormatting.ITALIC));
 			this.currentTagId="";
 			if(this.slotGrid!=null) this.slotGrid.setItems(List.of());
 			return;
@@ -282,7 +258,6 @@ public class ItemInfo extends Screen{
 		gui.pose().popPose();
 		// Spodní panel tagů
 		Window.create(gui,Renderer.Texture.CLASSIC,width/2-9,height/2-37,219,155);
-		// Šedá pole pro TextButtony pod stránkou a ID tagu
 		gui.fill(width/2+26,height/2-20,width/2+177,height/2-6,0xFFA1A1A1);
 		gui.fill(width/2+26,height/2-5,width/2+177,height/2+9,0xFFA1A1A1);
 		RenderSystem.disableBlend();

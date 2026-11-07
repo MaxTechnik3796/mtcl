@@ -9,5 +9,6 @@
 	"screen.mtcl.item_info":"Item Info",
 	"info.mtcl.item_tags":"Item Tags",
 	"info.mtcl.block_tags":"Block Tags",
-	"info.mtcl.fluid_tags":"Fluid Tags"
+	"info.mtcl.fluid_tags":"Fluid Tags",
+	"info.mtcl.no_tags":"No tags"
 }
