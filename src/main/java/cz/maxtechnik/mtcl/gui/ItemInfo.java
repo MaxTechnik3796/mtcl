@@ -39,7 +39,7 @@ public class ItemInfo extends Screen{
 	private SlotGrid slotGrid;
 	private int tagIndex=0;
 	private String currentTagId="";
-	private OpmCodeViewerWidget codeViewer;
+	private CodeView codeViewer;
 	private boolean onlyComponentChanges=false;
 	public ItemInfo(ItemStack itemStack,Screen parent){
 		super(Component.translatable("screen."+MtclMod.MODID+".item_info"));
@@ -53,18 +53,26 @@ public class ItemInfo extends Screen{
 		// ==========================================
 		// LEVÝ PANEL: Component / Code View
 		// ==========================================
-		Button toggleChangesButton=this.addRenderableWidget(new Button(width/2-39,height/2+86,29,12,Component.translatable(onlyComponentChanges?"info."+MtclMod.MODID+".code.changes":"info."+MtclMod.MODID+".code.all"),button->{
+		CodeButton toggleChangesButton=this.addRenderableWidget(new CodeButton(width/2-37,height/2+33,Component.translatable(onlyComponentChanges?"info."+MtclMod.MODID+".code.changes":"info."+MtclMod.MODID+".code.all"),onlyComponentChanges?CodeButton.Texture.CHANGES:CodeButton.Texture.ALL,button->{
 			onlyComponentChanges=!onlyComponentChanges;
 			button.setMessage(Component.translatable(onlyComponentChanges?"info."+MtclMod.MODID+".code.changes":"info."+MtclMod.MODID+".code.all"));
+			button.setTexture(onlyComponentChanges?CodeButton.Texture.CHANGES:CodeButton.Texture.ALL);
 			if(codeViewer!=null) codeViewer.loadFromItemStack(this.itemStack,onlyComponentChanges);
 		}));
 		toggleChangesButton.setSkipFocus(true);
-		Button copyAllButton=this.addRenderableWidget(new Button(width/2-39,height/2+98,29,12,Component.translatable("info."+MtclMod.MODID+".code.copy"),button->{
-			String serialized=OpmComponentHandler.extractComponentsToString(this.itemStack,onlyComponentChanges);
+		CodeButton copyAllButton=this.addRenderableWidget(new CodeButton(width/2-37,height/2+62,Component.translatable("info."+MtclMod.MODID+".code.copy"),CodeButton.Texture.COPY,button->{
+			String serialized=ComponentHandler.extractComponentsToString(this.itemStack,onlyComponentChanges);
 			if(!serialized.isEmpty()) copy(serialized);
 		}));
 		copyAllButton.setSkipFocus(true);
-		codeViewer=this.addRenderableWidget(new OpmCodeViewerWidget(this.font,width/2-203,height/2-109,155,219,(x,y,text)->copy(text)));
+		ResourceLocation rawItemRegisterName=BuiltInRegistries.ITEM.getKey(itemStack.getItem());
+		String itemRegisterName=rawItemRegisterName.toString();
+		CodeButton giveButton=this.addRenderableWidget(new CodeButton(width/2-37,height/2+91,Component.translatable("info."+MtclMod.MODID+".code.give"),CodeButton.Texture.GIVE,button->{
+			String serialized=ComponentHandler.extractComponentsToString(this.itemStack,onlyComponentChanges);
+			if(!serialized.isEmpty()) copy("/give @s "+itemRegisterName+" "+serialized+" "+itemStack.getCount());
+		}));
+		giveButton.setSkipFocus(true);
+		codeViewer=this.addRenderableWidget(new CodeView(this.font,width/2-203,height/2-109,155,219,(x,y,text)->copy(text)));
 		codeViewer.loadFromItemStack(this.itemStack,onlyComponentChanges);
 		// ==========================================
 		// PRAVÁ ČÁST: Taby, Tagy, Informace a Mřížka
@@ -80,12 +88,12 @@ public class ItemInfo extends Screen{
 		if(!this.itemTags.isEmpty()){
 			itemTab=this.addRenderableWidget(new Tab(width/2-41,tabY,Component.literal("Item Tags"),new ItemStack(Items.IRON_INGOT),button->selectTab(TagType.ITEM)));
 			itemTab.setHover("info."+MtclMod.MODID+".item_tags");
-			tabY+=30;
+			tabY+=29;
 		}
 		if(!this.blockTags.isEmpty()){
 			blockTab=this.addRenderableWidget(new Tab(width/2-41,tabY,Component.literal("Block Tags"),new ItemStack(Items.STONE),button->selectTab(TagType.BLOCK)));
 			blockTab.setHover("info."+MtclMod.MODID+".block_tags");
-			tabY+=30;
+			tabY+=29;
 		}
 		if(!this.fluidTags.isEmpty()){
 			fluidTab=this.addRenderableWidget(new Tab(width/2-41,tabY,Component.literal("Fluid Tags"),new ItemStack(Items.WATER_BUCKET),button->selectTab(TagType.FLUID)));
@@ -93,7 +101,7 @@ public class ItemInfo extends Screen{
 		}
 		leftTag=this.addRenderableWidget(new Button(width/2+12,height/2-20,14,14,Component.literal("<"),button->previousTag()));
 		leftTag.setSkipFocus(true);
-		rightTag=this.addRenderableWidget(new Button(width/2+177,height/2-20,14,14,Component.literal(">"),button->nextTag()));
+		rightTag=this.addRenderableWidget(new Button(width/2+176,height/2-20,14,14,Component.literal(">"),button->nextTag()));
 		rightTag.setSkipFocus(true);
 		int boxX=width/2+28;
 		int boxWidth=147;
@@ -108,8 +116,6 @@ public class ItemInfo extends Screen{
 		String itemDisplayName=itemStack.getHoverName().getString();
 		TextButton itemDisplayNameButton=this.addRenderableWidget(new TextButton(width/2+45,height/2-108,140,itemDisplayName,button->copy(itemDisplayName)));
 		itemDisplayNameButton.setUnderline(true);
-		ResourceLocation rawItemRegisterName=BuiltInRegistries.ITEM.getKey(itemStack.getItem());
-		String itemRegisterName=rawItemRegisterName.toString();
 		TextButton itemRegisterNameButton=this.addRenderableWidget(new TextButton(width/2+45,height/2-94,140,itemRegisterName,button->copy(itemRegisterName)));
 		itemRegisterNameButton.setUnderline(true);
 		itemRegisterNameButton.setColor(0x55FF55);
@@ -250,31 +256,29 @@ public class ItemInfo extends Screen{
 		RenderSystem.setShaderColor(1,1,1,1);
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		// Levý panel komponent
+		//Code:
 		Window.create(gui,Renderer.Texture.TEXT,width/2-210,height/2-117,170,235);
-		gui.blit(ResourceLocation.fromNamespaceAndPath(MtclMod.MODID,"textures/gui/tab_code.png"),width/2-40,height/2+82,0,0,32,32,32,32);
-		// Horní panel informací o itemu
+		ResourceLocation codeTab=ResourceLocation.fromNamespaceAndPath(MtclMod.MODID,"textures/gui/code/tab.png");
+		gui.blit(codeTab,width/2-40,height/2+86,0,0,32,28,32,28);
+		gui.blit(codeTab,width/2-40,height/2+57,0,0,32,28,32,28);
+		gui.blit(codeTab,width/2-40,height/2+28,0,0,32,28,32,28);
+		//Item Info:
 		Window.create(gui,Renderer.Texture.CLASSIC,width/2-38,height/2-117,248,80);
 		Window.create(gui,Renderer.Texture.BOARD,width/2-34,height/2-113,72,72);
 		Window.create(gui,Renderer.Texture.BOARD,width/2+40,height/2-113,150,72);
-		// Zvětšený render itemu (4x)
-		int scale=4;
-		int itemSize=16*scale;
-		int x=(width-itemSize)/2+2;
-		int y=(height-itemSize)/2-77;
 		gui.pose().pushPose();
-		gui.pose().translate(x,y,0F);
-		gui.pose().scale(scale,scale,1F);
+		gui.pose().translate((float)(width-64)/2+2,(float)(height-64)/2-77,0F);
+		gui.pose().scale(4,4,1);
 		Lighting.setupForEntityInInventory();
 		gui.renderItem(itemStack,0,0);
 		gui.renderItemDecorations(minecraft.font,itemStack,0,0);
 		gui.flush();
 		Lighting.setupFor3DItems();
 		gui.pose().popPose();
-		// Spodní panel tagů
+		//Tags:
 		Window.create(gui,Renderer.Texture.CLASSIC,width/2-9,height/2-37,219,155);
-		gui.fill(width/2+26,height/2-20,width/2+177,height/2-6,0xFFA1A1A1);
-		gui.fill(width/2+26,height/2-5,width/2+177,height/2+9,0xFFA1A1A1);
+		gui.fill(width/2+26,height/2-20,width/2+176,height/2-6,0xFFA1A1A1);
+		gui.fill(width/2+26,height/2-5,width/2+176,height/2+9,0xFFA1A1A1);
 		RenderSystem.disableBlend();
 	}
 	private void copy(String copy){

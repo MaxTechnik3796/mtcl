@@ -11,7 +11,8 @@
 	"info.mtcl.block_tags":"Block Tags",
 	"info.mtcl.fluid_tags":"Fluid Tags",
 	"info.mtcl.no_tags":"No tags",
-	"info.mtcl.code.copy":"COPY",
-	"info.mtcl.code.changes":"CHAN",
-	"info.mtcl.code.all":"ALL"
+	"info.mtcl.code.copy":"Copy",
+	"info.mtcl.code.changes":"Changes",
+	"info.mtcl.code.all":"All",
+	"info.mtcl.code.give":"Copy Give"
 }

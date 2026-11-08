@@ -76,7 +76,7 @@ public class SlotGrid extends AbstractWidget{
 		int scrollerX=this.getX()+(this.gridCols*18)+3;
 		int scrollerY=this.getY();
 		int scrollerHeight=this.gridRows*18;
-		Renderer.render(gui,Renderer.Texture.SLOT,scrollerX-1,scrollerY,15,scrollerHeight+1);
+		Renderer.render(gui,Renderer.Texture.SLOT,scrollerX-1,scrollerY,14,scrollerHeight+1);
 		int trackStartY=scrollerY+1;
 		int trackAvailable=scrollerHeight-17;
 		if(maxScrollRows>0&&trackAvailable>0){

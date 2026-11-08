@@ -16,7 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
-public class OpmCodeViewerWidget extends AbstractWidget{
+public class CodeView extends AbstractWidget{
 	private static final Pattern NUMBER_PATTERN=Pattern.compile("^-?\\d+(\\.\\d+)?[fFdDlLsSbB]?$");
 	public static final int COLOR_ARRAY=0xFFDA70D6;    // [ ]
 	public static final int COLOR_KEY=0xFF9CDCFE;        // minecraft:item, levels
@@ -37,7 +37,7 @@ public class OpmCodeViewerWidget extends AbstractWidget{
 	private final List<CodeLine> lines=new ArrayList<>(), allLines=new ArrayList<>();
 	private final int lineHeight=10;
 	private int scroll=0, gutterWidth=18, dividerColor=0xFF656565, lineNumberColor=0xFF656565;
-	public OpmCodeViewerWidget(Font font,int x,int y,int width,int height,OnCopyListener copyListener){
+	public CodeView(Font font,int x,int y,int width,int height,OnCopyListener copyListener){
 		super(x,y,width,height,Component.empty());
 		this.font=font;
 		this.copyListener=copyListener;
@@ -48,9 +48,9 @@ public class OpmCodeViewerWidget extends AbstractWidget{
 			applyFilter();
 			return;
 		}
-		List<OpmComponentHandler.ComponentEntry> code=OpmComponentHandler.extractComponentsToList(itemStack,onlyChanges);
+		List<ComponentHandler.ComponentEntry> code=ComponentHandler.extractComponentsToList(itemStack,onlyChanges);
 		this.allLines.add(new CodeLine(Component.literal("[").withStyle(s->s.withColor(COLOR_ARRAY)),"["));
-		for(OpmComponentHandler.ComponentEntry entry: code){
+		for(ComponentHandler.ComponentEntry entry: code){
 			List<String> formatted=formatComponentLines(entry.id().toString(),entry.valueString());
 			for(String fLine: formatted) this.allLines.add(new CodeLine(highlightLine(fLine),fLine.trim()));
 		}
