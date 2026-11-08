@@ -26,7 +26,9 @@ public class CodeButton extends Button{
 		void onPress(CodeButton button);
 	}
 	public CodeButton(int x,int y,Component message,Texture texture,CodeButton.OnPress onPress){
-		super(x,y,20,18,message,button->{if(onPress!=null) onPress.onPress((CodeButton)button);});
+		super(x,y,20,18,message,button->{
+			if(onPress!=null) onPress.onPress((CodeButton)button);
+		});
 		this.texture=texture.sprites;
 		this.message=message;
 	}

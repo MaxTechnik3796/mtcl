@@ -6,15 +6,14 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-
 @Mixin(LevelRenderer.class)
-public class LevelRendererMixin {
+public class LevelRendererMixin{
 	@Inject(
-			method = "doesMobEffectBlockSky",
-			at = @At("HEAD"),
-			cancellable = true
+			method="doesMobEffectBlockSky",
+			at=@At("HEAD"),
+			cancellable=true
 	)
-	private void mtcl$forceSkyRendering(Camera camera, CallbackInfoReturnable<Boolean> cir) {
+	private void mtcl$forceSkyRendering(Camera camera,CallbackInfoReturnable<Boolean> cir){
 		cir.setReturnValue(false);
 	}
 }

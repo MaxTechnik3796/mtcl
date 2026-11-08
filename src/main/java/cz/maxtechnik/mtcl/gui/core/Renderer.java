@@ -6,7 +6,7 @@ import net.minecraft.resources.ResourceLocation;
 public class Renderer{
 	public enum Texture{
 		CLASSIC(ResourceLocation.fromNamespaceAndPath(MtclMod.MODID,"textures/gui/background/classic.png"),256,4),
-		TEXT(ResourceLocation.fromNamespaceAndPath(MtclMod.MODID,"textures/gui/background/text.png"),256,8),
+		TEXT(ResourceLocation.fromNamespaceAndPath(MtclMod.MODID,"textures/gui/background/text.png"),256,5),
 		SLOT(ResourceLocation.fromNamespaceAndPath(MtclMod.MODID,"textures/gui/background/slot.png"),256,1),
 		BOARD(ResourceLocation.fromNamespaceAndPath(MtclMod.MODID,"textures/gui/background/board.png"),256,4);
 		final ResourceLocation texture;

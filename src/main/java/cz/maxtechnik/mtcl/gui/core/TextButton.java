@@ -13,14 +13,22 @@ public class TextButton extends Button{
 	private boolean underline=false;
 	private boolean centered=false;
 	private int color=0xFFFFFF;
-	private Component text;
-	public TextButton(int x,int y,int width,Component text,OnPress onPress){
-		super(x,y,width,9,text,onPress);
-		this.text=text;
+	private Component message;
+	public TextButton(int x,int y,int width,Component message,OnPress onPress){
+		super(x,y,width,9,message,onPress);
+		this.message=message;
 	}
-	public TextButton(int x,int y,int width,String text,OnPress onPress){
-		super(x,y,width,9,Component.literal(text),onPress);
-		this.text=Component.literal(text);
+	public TextButton(int x,int y,int width,String message,OnPress onPress){
+		super(x,y,width,9,Component.literal(message),onPress);
+		this.message=Component.literal(message);
+	}
+	public TextButton(int x,int y,int width,Component message){
+		super(x,y,width,9,message,null);
+		this.message=message;
+	}
+	public TextButton(int x,int y,int width,String message){
+		super(x,y,width,9,Component.literal(message),null);
+		this.message=Component.literal(message);
 	}
 	public void setUnderline(boolean value){
 		this.underline=value;
@@ -31,11 +39,11 @@ public class TextButton extends Button{
 	public void setColor(int value){
 		this.color=value;
 	}
-	public void setText(String value){
+	public void setMessage(String value){
 		this.setText(Component.literal(value));
 	}
 	public void setText(Component value){
-		this.text=value;
+		this.message=value;
 		this.setMessage(value);
 	}
 	@Override
@@ -47,7 +55,7 @@ public class TextButton extends Button{
 		int minX=this.getX()+width;
 		int maxX=this.getX()+this.getWidth()-width;
 		int textY=this.getY()+(this.getHeight()-8)/2;
-		Component renderText=(this.underline&&this.isHovered)?this.text.copy().withStyle(Style.EMPTY.withUnderlined(true)):this.text;
+		Component renderText=(this.underline&&this.isHovered)?this.message.copy().withStyle(Style.EMPTY.withUnderlined(true)):this.message;
 		this.renderLinearScrollingText(gui,font,renderText,minX,this.getY(),maxX,this.getY()+this.getHeight(),textY,color);
 	}
 	private void renderLinearScrollingText(GuiGraphics gui,Font font,Component text,int minX,int minY,int maxX,int maxY,int textY,int color){

@@ -27,9 +27,6 @@ public class SlotGrid extends AbstractWidget{
 		this.gridRows=rows;
 		this.onSlotClick=onSlotClick;
 	}
-	public SlotGrid(int x,int y,int columns,int rows){
-		this(x,y,columns,rows,null);
-	}
 	public void setItems(ItemStack[] items){
 		this.gridItems=items!=null?items:new ItemStack[0];
 		this.scrollRowOffset=0;
@@ -78,7 +75,7 @@ public class SlotGrid extends AbstractWidget{
 		int scrollerHeight=this.gridRows*18;
 		Renderer.render(gui,Renderer.Texture.SLOT,scrollerX-1,scrollerY,14,scrollerHeight+1);
 		int trackStartY=scrollerY+1;
-		int trackAvailable=scrollerHeight-17;
+		int trackAvailable=scrollerHeight-16;
 		if(maxScrollRows>0&&trackAvailable>0){
 			int thumbY=trackStartY+(int)(trackAvailable*((float)this.scrollRowOffset/maxScrollRows));
 			gui.blitSprite(ResourceLocation.withDefaultNamespace("container/stonecutter/scroller"),scrollerX,thumbY,12,15);
@@ -143,7 +140,7 @@ public class SlotGrid extends AbstractWidget{
 	}
 	private void updateScrollFromMouse(double mouseY,int scrollerY,int scrollerHeight,int maxScrollRows){
 		int trackStartY=scrollerY+1;
-		int trackAvailable=scrollerHeight-17;
+		int trackAvailable=scrollerHeight-16;
 		if(trackAvailable<=0) return;
 		float relativeY=(float)(mouseY-trackStartY-(7.5F))/(float)trackAvailable;
 		float clampedY=Math.clamp(relativeY,0F,1F);

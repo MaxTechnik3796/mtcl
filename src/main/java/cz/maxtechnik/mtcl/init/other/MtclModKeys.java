@@ -15,7 +15,7 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 public class MtclModKeys{
 	public static final KeyMapping
 			BACKPACK=registerKey("key."+MtclMod.MODID+".backpack"),
-	 		AUTO_FROGPORT=registerKey("key."+MtclMod.MODID+".auto_frogport"),
+			AUTO_FROGPORT=registerKey("key."+MtclMod.MODID+".auto_frogport"),
 			ITEM_INFO=registerKey("key."+MtclMod.MODID+".item_info");
 	@SubscribeEvent
 	public static void onKeyRegister(RegisterKeyMappingsEvent event){
